@@ -26,7 +26,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [zoom, setZoom] = useState(1)
   const [thoughts, setThoughts] = useState<Thought[]>([])
-  const [isCreatingThought, setIsCreatingThought] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [viewOffset, setViewOffset] = useState({ x: 0, y: 0 })
@@ -723,7 +722,7 @@ export default function Home() {
                 <div className="mb-4">
                   <h4 className="font-medium text-gray-800 mb-2">Yorumlar</h4>
                   <div className="space-y-3 max-h-40 overflow-y-auto">
-                    {selectedThoughtForComment.comments.map((comment: {id: string, content: string, author: {username: string}, createdAt: string}) => (
+                    {(selectedThoughtForComment.comments as {id: string, content: string, author: {username: string}, createdAt: string}[]).map((comment) => (
                       <div key={comment.id} className="bg-gray-50 rounded-lg p-3">
                         <div className="flex items-center space-x-2 mb-1">
                           <span className="font-medium text-gray-800 text-sm">
