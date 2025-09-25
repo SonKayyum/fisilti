@@ -118,10 +118,7 @@ export default function Home() {
     // Load thoughts from API (fallback to sample on error)
     const loadThoughts = async () => {
       try {
-        const url = userLocation
-          ? `/api/thoughts?lat=${userLocation.lat}&lng=${userLocation.lng}&radius=5`
-          : '/api/thoughts'
-        const res = await fetch(url, { cache: 'no-store' })
+        const res = await fetch('/api/thoughts', { cache: 'no-store' })
         if (res.ok) {
           const data = await res.json()
           setThoughts(Array.isArray(data) ? data : [])
@@ -133,25 +130,25 @@ export default function Home() {
       }
     }
 
-    if (userLocation) {
-      loadThoughts()
-    }
-  }, [userLocation])
+    loadThoughts()
+  }, [])
 
-  // Fallback: if konum 1.5sn içinde gelmezse, konumsuz yükle
+  // When location becomes available, fetch location-aware thoughts to get real distances
   useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (!userLocation) {
-        try {
-          const res = await fetch('/api/thoughts', { cache: 'no-store' })
-          if (res.ok) {
-            const data = await res.json()
-            setThoughts(Array.isArray(data) ? data : [])
-          }
-        } catch {}
+    const fetchWithLocation = async () => {
+      if (!userLocation) return
+      try {
+        const url = `/api/thoughts?lat=${userLocation.lat}&lng=${userLocation.lng}&radius=5`
+        const res = await fetch(url, { cache: 'no-store' })
+        if (res.ok) {
+          const data = await res.json()
+          setThoughts(Array.isArray(data) ? data : [])
+        }
+      } catch (e) {
+        console.error('Error fetching location-aware thoughts:', e)
       }
-    }, 1500)
-    return () => clearTimeout(timer)
+    }
+    fetchWithLocation()
   }, [userLocation])
 
   const handleZoomIn = () => {
