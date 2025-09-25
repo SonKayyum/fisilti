@@ -46,7 +46,9 @@ export async function GET(request: NextRequest) {
         }
       })
 
-      return NextResponse.json(thoughts)
+      // Ensure distance exists for UI; use a neutral default (1000m)
+      const shaped = thoughts.map(t => ({ ...t, distance: 1000 }))
+      return NextResponse.json(shaped)
     }
 
     // Calculate distance using Haversine formula
@@ -173,7 +175,12 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    return NextResponse.json(thought, { status: 201 })
+    // Shape response to include a distance field (0m if coords not provided)
+    const shaped = {
+      ...thought,
+      distance: (latitude !== 0 && longitude !== 0) ? Math.round(calculateDistance(latitude, longitude, latitude, longitude) * 1000) : 0
+    }
+    return NextResponse.json(shaped, { status: 201 })
   } catch (error) {
     console.error('Error creating thought:', error)
     return NextResponse.json(
