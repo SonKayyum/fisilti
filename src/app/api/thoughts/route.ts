@@ -123,21 +123,37 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { content, latitude, longitude, authorId } = body
+    const { content } = body
 
-    if (!content || !latitude || !longitude || !authorId) {
+    if (!content || !content.trim()) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Content is required' },
         { status: 400 }
       )
     }
+
+    // Accept flexible payloads from the client
+    // Prefer explicit authorId; otherwise create (or reuse) a guest by username
+    let authorId: string | null = body.authorId ?? null
+    const authorUsername: string | null = body.author?.username ?? body.authorUsername ?? null
+
+    if (!authorId) {
+      const username = (authorUsername && String(authorUsername).trim()) || 'Anonim'
+      // Try to find an existing guest with this username, otherwise create one
+      const existing = await prisma.user.findFirst({ where: { username, isGuest: true } })
+      const author = existing ?? await prisma.user.create({ data: { username, isGuest: true } })
+      authorId = author.id
+    }
+
+    const latitude: number = typeof body.latitude === 'number' ? body.latitude : 0
+    const longitude: number = typeof body.longitude === 'number' ? body.longitude : 0
 
     const thought = await prisma.thought.create({
       data: {
         content,
         latitude,
         longitude,
-        authorId,
+        authorId: authorId!,
         isPublic: true
       },
       include: {
