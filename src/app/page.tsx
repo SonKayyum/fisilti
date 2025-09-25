@@ -115,8 +115,22 @@ export default function Home() {
       setIsLoading(false)
     }
 
-    // Set sample thoughts
-    setThoughts(sampleThoughts)
+    // Load thoughts from API (fallback to sample on error)
+    const loadThoughts = async () => {
+      try {
+        const res = await fetch('/api/thoughts', { cache: 'no-store' })
+        if (res.ok) {
+          const data = await res.json()
+          setThoughts(Array.isArray(data) ? data : [])
+        } else {
+          setThoughts(sampleThoughts)
+        }
+      } catch {
+        setThoughts(sampleThoughts)
+      }
+    }
+
+    loadThoughts()
   }, [])
 
   const handleZoomIn = () => {
