@@ -288,7 +288,7 @@ export default function Home() {
   }, [generateThoughtPositions])
 
   // Handle creating new thought
-  const handleCreateThought = () => {
+  const handleCreateThought = async () => {
     if (!newThoughtContent.trim()) return
     
     // If no user, use temp username
@@ -318,7 +318,36 @@ export default function Home() {
       setCurrentUser(user)
     }
     
-    setThoughts(prev => [newThought, ...prev])
+    try {
+      // Try to save to database
+      const response = await fetch('/api/thoughts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: newThoughtContent,
+          author: user,
+          distance: Math.round(distance),
+          latitude: userLocation?.lat || null,
+          longitude: userLocation?.lng || null
+        }),
+      })
+
+      if (response.ok) {
+        const savedThought = await response.json()
+        // Use the saved thought from database
+        setThoughts(prev => [savedThought, ...prev])
+      } else {
+        // Fallback to local state if API fails
+        setThoughts(prev => [newThought, ...prev])
+      }
+    } catch (error) {
+      console.error('Error saving thought:', error)
+      // Fallback to local state if API fails
+      setThoughts(prev => [newThought, ...prev])
+    }
+    
     setNewThoughtContent('')
     setTempUsername('')
     setShowCreateModal(false)
