@@ -43,6 +43,46 @@ export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [thoughtPositions, setThoughtPositions] = useState<Map<string, Position>>(new Map())
 
+  // Stable pseudo-random generator based on a string (e.g., thought id)
+  const generateSeedFromString = (value: string): number => {
+    let hash = 2166136261
+    for (let i = 0; i < value.length; i++) {
+      hash ^= value.charCodeAt(i)
+      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24)
+    }
+    // Convert to 0..1
+    const normalized = (hash >>> 0) / 4294967295
+    return normalized
+  }
+
+  const randomInRange = (seed: number, min: number, max: number): number => {
+    // simple LCG based on seed for stable randomness per id
+    let s = Math.floor(seed * 1_000_000) || 1
+    s = (1664525 * s + 1013904223) % 4294967296
+    const r = s / 4294967296
+    return Math.round(min + r * (max - min))
+  }
+
+  // Map actual distance to friendly bucketed display distance ranges
+  const getDisplayDistance = (thought: Thought): number => {
+    const actual = Math.max(0, Number(thought.distance) || 0)
+    const seed = generateSeedFromString(thought.id)
+
+    if (actual <= 120) {
+      return randomInRange(seed, 20, 110)
+    }
+    if (actual <= 600) {
+      return randomInRange(seed, 200, 400)
+    }
+    if (actual <= 1500) {
+      return randomInRange(seed, 600, 1000)
+    }
+    if (actual <= 3000) {
+      return randomInRange(seed, 1200, 2000)
+    }
+    return randomInRange(seed, 2000, 4000)
+  }
+
   useEffect(() => {
     // Sample thoughts data
     const sampleThoughts: Thought[] = [
@@ -528,9 +568,9 @@ export default function Home() {
                       {focusedThought.author.username}
                     </span>
                     <span className="text-gray-400 text-sm">•</span>
-                    <span className="text-gray-400 text-sm">
-                      {focusedThought.distance}m
-                    </span>
+                 <span className="text-gray-400 text-sm">
+                   {getDisplayDistance(focusedThought)}m
+                 </span>
                     <span className="text-gray-400 text-sm">•</span>
                     <span className="text-gray-400 text-sm">
                       {focusedThought.createdAt}
@@ -631,9 +671,9 @@ export default function Home() {
                         {thought.author.username}
                       </span>
                       <span className="text-gray-400" style={{ fontSize: `${size * 0.7}px` }}>•</span>
-                      <span className="text-gray-400" style={{ fontSize: `${size * 0.7}px` }}>
-                        {thought.distance}m
-                      </span>
+                 <span className="text-gray-400" style={{ fontSize: `${size * 0.7}px` }}>
+                   {getDisplayDistance(thought)}m
+                 </span>
                     </div>
                     <p 
                       className="text-gray-700 leading-relaxed"
