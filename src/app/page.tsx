@@ -531,7 +531,7 @@ export default function Home() {
                       className="flex items-center space-x-1 text-gray-500 hover:text-purple-600 transition-colors"
                     >
                       <MessageCircle className="w-4 h-4" />
-                      <span className="text-sm">{focusedThought.comments.length} yorum</span>
+                      <span className="text-sm">{focusedThought.comments?.length ?? 0} yorum</span>
                     </button>
                     <button 
                       onClick={() => {
@@ -636,7 +636,7 @@ export default function Home() {
                               className="flex items-center space-x-1 text-gray-500 hover:text-purple-600 transition-colors"
                             >
                               <MessageCircle className="w-3 h-3" />
-                              <span style={{ fontSize: `${size * 0.7}px` }}>{thought.comments.length}</span>
+                              <span style={{ fontSize: `${size * 0.7}px` }}>{thought.comments?.length ?? 0}</span>
                             </button>
                     </div>
                   </div>

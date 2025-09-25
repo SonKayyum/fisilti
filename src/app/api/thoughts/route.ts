@@ -178,7 +178,8 @@ export async function POST(request: NextRequest) {
     // Shape response to include a distance field (0m if coords not provided)
     const shaped = {
       ...thought,
-      distance: (latitude !== 0 && longitude !== 0) ? Math.round(calculateDistance(latitude, longitude, latitude, longitude) * 1000) : 0
+      distance: (latitude !== 0 && longitude !== 0) ? Math.round(calculateDistance(latitude, longitude, latitude, longitude) * 1000) : 0,
+      comments: []
     }
     return NextResponse.json(shaped, { status: 201 })
   } catch (error) {
