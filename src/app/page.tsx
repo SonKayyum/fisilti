@@ -767,12 +767,12 @@ export default function Home() {
               />
             )}
             
-            <textarea
-              value={newThoughtContent}
-              onChange={(e) => setNewThoughtContent(e.target.value)}
-              placeholder="Düşüncelerinizi paylaşın..."
-              className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
+                  <textarea
+                    value={newThoughtContent}
+                    onChange={(e) => setNewThoughtContent(e.target.value)}
+                    placeholder="Düşüncelerinizi paylaşın..."
+                    className="w-full h-32 p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 text-gray-900 placeholder-gray-400 text-base leading-relaxed"
+                  />
             <div className="flex space-x-3 mt-4">
               <button
                 onClick={() => {
