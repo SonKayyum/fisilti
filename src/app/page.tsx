@@ -26,7 +26,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true)
   const [zoom, setZoom] = useState(1)
   const [thoughts, setThoughts] = useState<Thought[]>([])
-  const [, setIsCreatingThought] = useState(false)
+  const [isCreatingThought, setIsCreatingThought] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const [viewOffset, setViewOffset] = useState({ x: 0, y: 0 })
@@ -242,7 +242,7 @@ export default function Home() {
     })
     
     setThoughtPositions(positions)
-  }, [thoughts, zoom, viewOffset])
+  }, [thoughts, viewOffset])
 
   const getThoughtPosition = (thought: Thought) => {
     return thoughtPositions.get(thought.id) || { x: 50, y: 50, z: 0 }
@@ -723,7 +723,7 @@ export default function Home() {
                 <div className="mb-4">
                   <h4 className="font-medium text-gray-800 mb-2">Yorumlar</h4>
                   <div className="space-y-3 max-h-40 overflow-y-auto">
-                    {selectedThoughtForComment.comments.map((comment: any) => (
+                    {selectedThoughtForComment.comments.map((comment: {id: string, content: string, author: {username: string}, createdAt: string}) => (
                       <div key={comment.id} className="bg-gray-50 rounded-lg p-3">
                         <div className="flex items-center space-x-2 mb-1">
                           <span className="font-medium text-gray-800 text-sm">
@@ -778,7 +778,7 @@ export default function Home() {
         {showLoginModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">Fısıltı'ya Katıl</h3>
+            <h3 className="text-xl font-bold mb-4">Fısıltı&apos;ya Katıl</h3>
             <p className="text-gray-600 mb-4">Anonim olarak katılın ve düşüncelerinizi paylaşın.</p>
             <input
               type="text"
