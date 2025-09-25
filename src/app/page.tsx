@@ -757,15 +757,15 @@ export default function Home() {
             <h3 className="text-xl font-bold mb-4">Yeni Fısıltı Paylaş</h3>
             
             {/* Username input if not logged in */}
-            {!currentUser && (
-              <input
-                type="text"
-                value={tempUsername}
-                onChange={(e) => setTempUsername(e.target.value)}
-                placeholder="Kullanıcı adınız (opsiyonel)"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4"
-              />
-            )}
+             {!currentUser && (
+               <input
+                 type="text"
+                 value={tempUsername}
+                 onChange={(e) => setTempUsername(e.target.value)}
+                 placeholder="Kullanıcı adınız (opsiyonel)"
+                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4 text-gray-900 placeholder-gray-400"
+               />
+             )}
             
                   <textarea
                     value={newThoughtContent}
@@ -784,13 +784,13 @@ export default function Home() {
               >
                 İptal
               </button>
-              <button
-                onClick={handleCreateThought}
-                disabled={!newThoughtContent.trim()}
-                className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Paylaş
-              </button>
+               <button
+                 onClick={handleCreateThought}
+                 disabled={!newThoughtContent.trim()}
+                 className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium tracking-tight"
+               >
+                 Paylaş
+               </button>
             </div>
           </div>
         </div>
@@ -878,14 +878,14 @@ export default function Home() {
         {showLoginModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">Fısıltı&apos;ya Katıl</h3>
+             <h3 className="text-xl font-bold mb-4 text-gray-900">Fısıltı&apos;ya Katıl</h3>
             <p className="text-gray-600 mb-4">Anonim olarak katılın ve düşüncelerinizi paylaşın.</p>
             <input
               type="text"
               value={loginUsername}
               onChange={(e) => setLoginUsername(e.target.value)}
               placeholder="Kullanıcı adınız"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4"
+               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4 text-gray-900 placeholder-gray-400"
               onKeyPress={(e) => {
                 if (e.key === 'Enter' && loginUsername.trim()) {
                   handleGuestLogin(loginUsername.trim())
