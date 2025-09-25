@@ -118,7 +118,10 @@ export default function Home() {
     // Load thoughts from API (fallback to sample on error)
     const loadThoughts = async () => {
       try {
-        const res = await fetch('/api/thoughts', { cache: 'no-store' })
+        const url = userLocation
+          ? `/api/thoughts?lat=${userLocation.lat}&lng=${userLocation.lng}&radius=5`
+          : '/api/thoughts'
+        const res = await fetch(url, { cache: 'no-store' })
         if (res.ok) {
           const data = await res.json()
           setThoughts(Array.isArray(data) ? data : [])
@@ -130,8 +133,26 @@ export default function Home() {
       }
     }
 
-    loadThoughts()
-  }, [])
+    if (userLocation) {
+      loadThoughts()
+    }
+  }, [userLocation])
+
+  // Fallback: if konum 1.5sn içinde gelmezse, konumsuz yükle
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (!userLocation) {
+        try {
+          const res = await fetch('/api/thoughts', { cache: 'no-store' })
+          if (res.ok) {
+            const data = await res.json()
+            setThoughts(Array.isArray(data) ? data : [])
+          }
+        } catch {}
+      }
+    }, 1500)
+    return () => clearTimeout(timer)
+  }, [userLocation])
 
   const handleZoomIn = () => {
     setZoom(prev => Math.min(prev + 0.2, 3))
